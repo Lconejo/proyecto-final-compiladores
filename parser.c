@@ -406,9 +406,7 @@ static void Param(void) {
     if (ACT() == ',') { emparejar(','); listP(); }
 }
 
-/* ============================================================
- *  Punto de entrada
- * ============================================================ */
+/*Inicio*/
 int analizadorSintactico(void) {
     pos = 0; erroresSint = 0; panico = 0;
     Program();

@@ -1,44 +1,35 @@
 /* ============================================================
- * atomos.h - Interfaz comun entre el analizador lexico (Flex),
- *            el modulo de reportes (atomos.c) y el analizador
- *            sintactico descendente recursivo (parser.c)
+ * atomos.h - Interfaz entre el analizador lexico (analizador.l),
+ *            el modulo de atomos (atomos.c) y el sintactico (parser.c)
  * ============================================================ */
 #ifndef ATOMOS_H
 #define ATOMOS_H
 
 #define MAX_ATOMOS   5000
 #define MAX_LEXEMA   64
-#define ATOMO_FIN    '$'      /* marcador de fin de archivo (el simbolo de fin de las tablas) */
+#define ATOMO_FIN    '$'      /* marcador de fin de archivo */
 
-/* Atomo que el analizador lexico entrega al sintactico */
 typedef struct {
-    char atomo;                /* simbolo terminal de la gramatica (Tabla 1, Anexo A) */
-    int  clase;                /* clase del componente lexico (0-9), -1 para fin     */
-    int  valor;                /* valor del token                                     */
-    int  linea;                /* linea donde inicia en el fuente                     */
-    int  columna;              /* columna donde inicia en el fuente                   */
-    char lexema[MAX_LEXEMA];   /* texto original (truncado) para mensajes de error    */
+    char atomo;                /* terminal de la gramatica (Tabla 1, Anexo A) */
+    int  clase;                /* clase del componente lexico (-1 = fin)      */
+    int  valor;                /* valor del token                             */
+    int  linea;                /* linea donde inicia                          */
+    int  columna;              /* columna donde inicia                        */
+    char lexema[MAX_LEXEMA];   /* texto original (truncado), para errores     */
 } Atomo;
 
 extern Atomo listaAtomos[MAX_ATOMOS];
 extern int   numAtomos;
-extern int   erroresLexicos;
+extern int   erroresLexicos;   /* se define en analizador.l */
 
-/* Posicion del token actual (la actualiza actualizarPosicion) */
-extern int tok_linea, tok_col;
+/* Lo llama analizador.l en cada token reconocido */
+void agregarAtomo(char atomo, int clase, int valor, int linea, int columna, const char *lexema);
 
-/* ---- Servicios para el analizador lexico (llamados desde analizador.l) ---- */
-void actualizarPosicion(const char *texto, int longitud);
-void emitirToken(int clase, int valor, char atomo, const char *lexema);
-void reportarErrorLexico(const char *lexema);
-int  guardarIden(const char *nombre);
-int  guardarLiteral(const char *cadena);
+/* Lo llama main() al terminar de imprimir las tablas del Proyecto 1:
+ * cierra la secuencia, la imprime y ejecuta el sintactico solo si no hubo errores lexicos */
+int  finalizarAnalisis(int linea_fin, int columna_fin);
 
-/* ---- Reportes y control general ---- */
-void imprimirEncabezado(void);
-int  finalizarAnalisis(void);   /* tablas, atomos, y (si procede) analisis sintactico */
-
-/* ---- Analizador sintactico (parser.c) ---- */
-int  analizadorSintactico(void); /* devuelve el numero de errores sintacticos */
+/* parser.c: devuelve el numero de errores sintacticos */
+int  analizadorSintactico(void);
 
 #endif
