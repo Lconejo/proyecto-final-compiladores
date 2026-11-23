@@ -1,0 +1,48 @@
+inteiro _suma(inteiro _a, flutuador _b)
+{
+    inteiro _total = 0, _aux, _max = 100;
+    flutuador _msg = "cadena #1";
+
+    _total = _a + 15 * (12 - (+93));
+    _total += (-5);
+    _aux = [_suma(_total, 8)];
+
+    se (_total >= 31 && _a != (-1))
+    #
+        _total = _total + 1;
+    #
+
+    enquanto (_total < _max)
+    #
+        _total *= 2;
+        se (!{_total > 50})
+        #
+            quebrar;
+        #
+    #
+
+    fazer
+    #
+        _aux = _aux - 1;
+    # enquanto (_aux > 0);
+
+    para _a [1, 8]
+    #
+        _total = _total + _a;
+    #
+
+    trocar(_total):
+    #
+        caso(1) { _aux = 1; }
+        caso(2) { _aux = 2; }
+        () { _aux = 0; }
+    #
+
+    retorno _total * 5;
+}
+
+assinado _saluda()
+{
+    [_suma(1, 2)]
+    retorno { "hola" & "mundo" like "otra" };
+}

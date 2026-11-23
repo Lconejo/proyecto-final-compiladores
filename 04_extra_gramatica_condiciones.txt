@@ -1,0 +1,8 @@
+assinado _g()
+{
+    inteiro _a = 1, _b = 2;
+    se (_a > 8 && (3 < _b))
+    #
+        quebrar;
+    #
+}

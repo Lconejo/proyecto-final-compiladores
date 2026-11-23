@@ -1,0 +1,7 @@
+inteiro _f(inteiro _x)
+{
+    inteiro _y = 5;
+    _y = _x @ 3;
+    _y = $ + 1;
+    retorno _y;
+}

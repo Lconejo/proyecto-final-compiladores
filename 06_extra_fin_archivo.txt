@@ -1,0 +1,5 @@
+inteiro _f(inteiro _x)
+{
+    se (_x > 0)
+    #
+        _x = 1;

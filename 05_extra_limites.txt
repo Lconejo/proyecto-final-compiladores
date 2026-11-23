@@ -1,0 +1,18 @@
+assinado _vacia() { }
+inteiro _anidada(inteiro _n)
+{
+    se (_n > 0)
+    #
+        enquanto (_n > 1)
+        #
+            fazer
+            #
+                para _n [0, 3]
+                #
+                    _n -= 1;
+                #
+            # enquanto (_n != 0);
+        #
+    #
+    retorno;
+}
