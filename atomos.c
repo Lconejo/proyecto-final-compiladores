@@ -23,7 +23,7 @@ void agregarAtomo(char atomo, int clase, int valor, int linea, int columna, cons
 }
 
 static void imprimirAtomos(void) {
-    printf("\n\n--- SECUENCIA DE ATOMOS (entrada del analizador sintactico) ---\n");
+    printf("\n\n--- SECUENCIA DE ATOMOS ---\n");
     printf("%-5s | %-5s | %-9s | %-6s | %s\n", "No.", "Atomo", "Lin:Col", "Clase", "Lexema");
     printf("------------------------------------------------------\n");
     for (int i = 0; i < numAtomos; i++) {

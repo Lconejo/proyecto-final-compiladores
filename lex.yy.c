@@ -555,9 +555,10 @@ int tok_linea = 1, tok_col = 1;
 /* Guarda el atomo del token reconocido (ademas del printf del token) */
 #define ATOMO(a, c, v) agregarAtomo((a), (c), (v), tok_linea, tok_col, yytext)
 
-/* --------------------------------------------------
- * TABLA DE SÍMBOLOS (Identificadores - Clase 5)
- * -------------------------------------------------- */
+/* ##############################################
+   Tabla de Simbolos (Identificadores - Clase 5)
+ ################################################
+*/
 typedef struct {
     int posicion;
     char nombre[50];
@@ -583,9 +584,10 @@ int guardarIden(char* token) {
     return numIden - 1;
 }
 
-/* --------------------------------------------------
- * TABLA DE LITERALES (Cadenas - Clase 8)
- * -------------------------------------------------- */
+/* ##################################################
+   Tabla de literales (Cadenas - Clase 8)
+   ################################################## 
+*/
 typedef struct {
     int posicion;
     char dato[200];
@@ -611,7 +613,7 @@ int guardarLiteral(char* cadena) {
 /* Clase 5: Identificadores */
 /* Clase 6: Símbolos especiales */
 /* Clase 8: Cadenas encerradas entre comillas */
-#line 615 "lex.yy.c"
+#line 617 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -798,11 +800,11 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 104 "analizador.l"
+#line 106 "analizador.l"
 
 
  /* Control de líneas y espacios */
-#line 806 "lex.yy.c"
+#line 808 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -888,18 +890,18 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 /* rule 1 can match eol */
 YY_RULE_SETUP
-#line 107 "analizador.l"
+#line 109 "analizador.l"
 { linea_actual++; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 108 "analizador.l"
+#line 110 "analizador.l"
 { /* Ignorar espacios y tabuladores */ }
 	YY_BREAK
 /* Clase 0: Operadores aritméticos */
 case 3:
 YY_RULE_SETUP
-#line 111 "analizador.l"
+#line 113 "analizador.l"
 {
     printf("<0, %d>\n", yytext[0]);
     ATOMO(yytext[0], 0, yytext[0]);
@@ -908,54 +910,54 @@ YY_RULE_SETUP
 /* Clase 1: Operadores lógicos */
 case 4:
 YY_RULE_SETUP
-#line 117 "analizador.l"
+#line 119 "analizador.l"
 { printf("<1, 0>\n"); ATOMO('h', 1, 0); }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 118 "analizador.l"
+#line 120 "analizador.l"
 { printf("<1, 1>\n"); ATOMO('j', 1, 1); }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 119 "analizador.l"
+#line 121 "analizador.l"
 { printf("<1, 2>\n"); ATOMO('!', 1, 2); }
 	YY_BREAK
 /* Clase 2: Operadores relacionales */ 
 case 7:
 YY_RULE_SETUP
-#line 122 "analizador.l"
+#line 124 "analizador.l"
 { printf("<2, 0>\n"); ATOMO('e', 2, 0); }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 123 "analizador.l"
+#line 125 "analizador.l"
 { printf("<2, 1>\n"); ATOMO('d', 2, 1); }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 124 "analizador.l"
+#line 126 "analizador.l"
 { printf("<2, 2>\n"); ATOMO('>', 2, 2); }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 125 "analizador.l"
+#line 127 "analizador.l"
 { printf("<2, 3>\n"); ATOMO('<', 2, 3); }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 126 "analizador.l"
+#line 128 "analizador.l"
 { printf("<2, 4>\n"); ATOMO('m', 2, 4); }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 127 "analizador.l"
+#line 129 "analizador.l"
 { printf("<2, 5>\n"); ATOMO('w', 2, 5); }
 	YY_BREAK
 /* Clase 3: Constantes numéricas */
 case 13:
 YY_RULE_SETUP
-#line 130 "analizador.l"
+#line 132 "analizador.l"
 {
     int valorCte;
     if (yytext[0] == '(') {
@@ -970,7 +972,7 @@ YY_RULE_SETUP
 /* Clase 4: Palabras reservadas */
 case 14:
 YY_RULE_SETUP
-#line 142 "analizador.l"
+#line 144 "analizador.l"
 {
     int valor;
     if (strcmp(yytext, "assinado") == 0) valor = 0;
@@ -992,7 +994,7 @@ YY_RULE_SETUP
 /* Clase 5: Identificadores */
 case 15:
 YY_RULE_SETUP
-#line 161 "analizador.l"
+#line 163 "analizador.l"
 {
     int indice = guardarIden(yytext);
     printf("<5, %d>\n", indice);
@@ -1002,45 +1004,45 @@ YY_RULE_SETUP
 /* Clase 6: Símbolos especiales */
 case 16:
 YY_RULE_SETUP
-#line 168 "analizador.l"
+#line 170 "analizador.l"
 { printf("<6, %d>\n", yytext[0]); ATOMO(yytext[0], 6, yytext[0]); }
 	YY_BREAK
 /* Clase 7: Operadores de asignación */
 case 17:
 YY_RULE_SETUP
-#line 171 "analizador.l"
+#line 173 "analizador.l"
 { printf("<7, 1>\n"); ATOMO('x', 7, 1); }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 172 "analizador.l"
+#line 174 "analizador.l"
 { printf("<7, 2>\n"); ATOMO('y', 7, 2); }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 173 "analizador.l"
+#line 175 "analizador.l"
 { printf("<7, 3>\n"); ATOMO('k', 7, 3); }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 174 "analizador.l"
+#line 176 "analizador.l"
 { printf("<7, 4>\n"); ATOMO('r', 7, 4); }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 175 "analizador.l"
+#line 177 "analizador.l"
 { printf("<7, 5>\n"); ATOMO('o', 7, 5); }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 176 "analizador.l"
+#line 178 "analizador.l"
 { printf("<7, 0>\n"); ATOMO('=', 7, 0); }
 	YY_BREAK
 /* Clase 8: Constantes cadenas */
 case 23:
 /* rule 23 can match eol */
 YY_RULE_SETUP
-#line 179 "analizador.l"
+#line 181 "analizador.l"
 {
     /* Contar saltos de línea internos si la cadena abarca varias líneas */
     for (int i = 0; yytext[i] != '\0'; i++) {
@@ -1054,18 +1056,18 @@ YY_RULE_SETUP
 /* Clase 9: Operadores sobre cadenas */
 case 24:
 YY_RULE_SETUP
-#line 190 "analizador.l"
+#line 192 "analizador.l"
 { printf("<9, 0>\n"); ATOMO('&', 9, 0); }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 191 "analizador.l"
+#line 193 "analizador.l"
 { printf("<9, 1>\n"); ATOMO('l', 9, 1); }
 	YY_BREAK
 /* Manejo de Errores Léxicos */
 case 26:
 YY_RULE_SETUP
-#line 194 "analizador.l"
+#line 196 "analizador.l"
 {
     erroresLexicos++;
     printf("[Error Lexico] Linea %d: Simbolo no reconocido '%s'\n", linea_actual, yytext);
@@ -1073,10 +1075,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 199 "analizador.l"
+#line 201 "analizador.l"
 ECHO;
 	YY_BREAK
-#line 1080 "lex.yy.c"
+#line 1082 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2074,7 +2076,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 199 "analizador.l"
+#line 201 "analizador.l"
 
 
 

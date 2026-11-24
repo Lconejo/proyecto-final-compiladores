@@ -21,9 +21,10 @@ int tok_linea = 1, tok_col = 1;
 /* Guarda el atomo del token reconocido (ademas del printf del token) */
 #define ATOMO(a, c, v) agregarAtomo((a), (c), (v), tok_linea, tok_col, yytext)
 
-/* --------------------------------------------------
- * TABLA DE SÍMBOLOS (Identificadores - Clase 5)
- * -------------------------------------------------- */
+/* ##############################################
+   Tabla de Simbolos (Identificadores - Clase 5)
+ ################################################
+*/
 typedef struct {
     int posicion;
     char nombre[50];
@@ -49,9 +50,10 @@ int guardarIden(char* token) {
     return numIden - 1;
 }
 
-/* --------------------------------------------------
- * TABLA DE LITERALES (Cadenas - Clase 8)
- * -------------------------------------------------- */
+/* ##################################################
+   Tabla de literales (Cadenas - Clase 8)
+   ################################################## 
+*/
 typedef struct {
     int posicion;
     char dato[200];

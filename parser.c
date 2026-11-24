@@ -1,42 +1,27 @@
-/* ============================================================
- * parser.c - Analizador sintactico descendente recursivo (lenguaje X)
- *
- * Una funcion por cada no terminal de la gramatica LL(1) (42 en total).
- * Cada funcion decide con UN atomo de preanalisis (conjuntos de seleccion
- * del documento de la Parte 1) y consume los atomos que espera.
- *
- * Recuperacion de errores (modo panico sencillo):
- *   - emparejar() NO consume si el atomo no coincide: solo reporta (insercion virtual).
- *   - Tras un error se activa 'panico' y se suprimen reportes hasta consumir
- *     correctamente un atomo (evita errores en cascada).
- *   - Los lugares donde se "salta" texto (listaS, otraFunc, Program, F, ...)
- *     siempre consumen al menos un atomo o se detienen en el fin de archivo '$'
- *     => no hay ciclos infinitos.
- * ============================================================ */
+/* parser.c - Analizador sintactico descendente recursivo para el lenguaje X */
 #include <stdio.h>
 #include <string.h>
 #include "atomos.h"
 
-/* ---------- Estado del analizador ---------- */
-static int pos = 0;             /* indice del atomo de preanalisis */
+/* Variables de control */
+static int pos = 0;
 static int erroresSint = 0;
 static int panico = 0;
 
 #define ACT()   (listaAtomos[pos].atomo)
 
-/* En la tabla de atomos '&' es el operador de concatenacion de cadenas.
- * (La gramatica original usaba 'h' en <opCad>, que es el atomo de &&; ver documento.) */
+/* '&' es el atomo para concatenacion de cadenas */
 #define ATOMO_CONCAT '&'
 
-/* Conjuntos de seleccion / sincronizacion usados con en() */
+/* Conjuntos de seleccion y sincronizacion */
 #define PRIM_FUNC   "fgi"
-#define PRIM_SENT   "[abpqstuz"          /* a=asig, [=llamada, b=trocar, p=para, q=enq, s=se, t=ret, u=quebrar, z=faz */
-#define PRIM_EXPR   "([an"               /* First(E) */
+#define PRIM_SENT   "[abpqstuz"
+#define PRIM_EXPR   "([an"
 #define SYNC_EXPR   ")%*+,-/;<>edhjmw}#]"
 
 static int en(char c, const char *conjunto) { return c != '\0' && strchr(conjunto, c) != NULL; }
 
-/* ---------- Prototipos: un no terminal = una funcion ---------- */
+/* Prototipos de los no terminales */
 static void Program(void);   static void otraFunc(void);  static void Func(void);
 static void TipoF(void);     static void listArg(void);   static void otroArg(void);
 static void Cuerpo(void);    static void listDecl(void);  static void Decl(void);
@@ -52,7 +37,7 @@ static void valRet(void);    static void expCad(void);    static void opCad(void
 static void Para(void);      static void Trocar(void);    static void casos(void);
 static void Llama(void);     static void listP(void);     static void Param(void);
 
-/* ---------- Utilidades ---------- */
+/* Funciones auxiliares */
 static const char *nombreAtomo(char c) {
     static char buf[8];
     switch (c) {
@@ -74,7 +59,6 @@ static const char *nombreAtomo(char c) {
     }
 }
 
-/* Reporta "se esperaba X pero se encontro Y" (con supresion en modo panico) */
 static void errorEsperaba(const char *esperado) {
     if (panico) return;
     panico = 1;
@@ -88,26 +72,25 @@ static void errorEsperaba(const char *esperado) {
                a->linea, a->columna, esperado, nombreAtomo(a->atomo), a->lexema);
 }
 
-static void saltar(void) { if (ACT() != ATOMO_FIN) pos++; }   /* descarta, sin salir de panico */
+static void saltar(void) { if (ACT() != ATOMO_FIN) pos++; }
+
 static void sincronizar(const char *conjunto) {
     while (ACT() != ATOMO_FIN && !en(ACT(), conjunto)) saltar();
 }
 
-/* Consume el atomo esperado; si no coincide reporta y NO consume */
 static void emparejar(char esperado) {
     if (ACT() == esperado) {
         if (esperado != ATOMO_FIN) pos++;
         panico = 0;
     } else {
         char desc[40];
-        snprintf(desc, sizeof desc, "%s", nombreAtomo(esperado));
+        snprintf(desc, sizeof(desc), "%s", nombreAtomo(esperado));
         errorEsperaba(desc);
     }
 }
 
-/* ============================================================
- *  Estructura del programa
- * ============================================================ */
+/* Estructura del programa */
+
 /* 1: <Program> -> <Func><otraFunc> */
 static void Program(void) {
     if (!en(ACT(), PRIM_FUNC)) {
@@ -123,7 +106,7 @@ static void otraFunc(void) {
     else if (ACT() == ATOMO_FIN)   { /* epsilon */ }
     else {
         errorEsperaba("otra funcion o el fin de archivo");
-        saltar();                  /* siempre avanza */
+        saltar();
         otraFunc();
     }
 }
@@ -147,7 +130,6 @@ static void TipoF(void) {
 /* 7,8: <listArg> -> <Tipo> a <otroArg> | e */
 static void listArg(void) {
     if (en(ACT(), "fi")) { Tipo(); emparejar('a'); otroArg(); }
-    /* epsilon por omision; un error se detecta en emparejar(')') */
 }
 
 /* 9,10: <otroArg> -> , <Tipo> a <otroArg> | e */
@@ -165,9 +147,8 @@ static void listDecl(void) {
     if (en(ACT(), "fi")) { Decl(); listDecl(); }
 }
 
-/* ============================================================
- *  Declaraciones
- * ============================================================ */
+/* Declaraciones */
+
 /* 14: <Decl> -> <Tipo> a <valorIni> <listaVar> ; */
 static void Decl(void) {
     Tipo(); emparejar('a'); valorIni(); listaVar(); emparejar(';');
@@ -197,9 +178,8 @@ static void tipoVal(void) {
     else { errorEsperaba("una constante numerica o una cadena"); sincronizar(",;"); }
 }
 
-/* ============================================================
- *  Asignacion y expresiones aritmeticas
- * ============================================================ */
+/* Asignacion y expresiones aritmeticas */
+
 /* 23: <Asig> -> a <opArit> E ; */
 static void Asig(void) {
     emparejar('a'); opArit(); E(); emparejar(';');
@@ -243,9 +223,8 @@ static void F(void) {
     }
 }
 
-/* ============================================================
- *  Expresiones relacionales y logicas
- * ============================================================ */
+/* Expresiones relacionales y logicas */
+
 /* 43: R -> E <opRel> E */
 static void R(void) { E(); opRel(); E(); }
 
@@ -280,9 +259,8 @@ static void opLog(void) {
     else errorEsperaba("un operador logico (&& o ||)");
 }
 
-/* ============================================================
- *  Sentencias
- * ============================================================ */
+/* Sentencias */
+
 /* 50-58: <Sent> -> <Asig> | Q | <Ret> | <Trocar> | <Enq> | <Faz> | <Se> | <Para> | <Llama> */
 static void Sent(void) {
     switch (ACT()) {
@@ -299,19 +277,18 @@ static void Sent(void) {
     }
 }
 
-/* 59,60: <listaS> -> <Sent> <listaS> | e      (epsilon: # } $) */
+/* 59,60: <listaS> -> <Sent> <listaS> | e */
 static void listaS(void) {
     if (en(ACT(), PRIM_SENT)) { Sent(); listaS(); }
     else if (en(ACT(), "#}") || ACT() == ATOMO_FIN) { /* epsilon */ }
     else {
         if (en(ACT(), "fi")) {
-            /* Declaracion despues de sentencias: se reporta y se analiza igual
-               (Decl consume al menos el tipo) para no generar errores en cascada */
+            /* Si hay una declaracion despues de sentencias, se reporta y se procesa */
             errorEsperaba("una sentencia (las declaraciones deben ir antes de las sentencias)");
             Decl();
         } else {
             errorEsperaba("una sentencia, '#' o '}'");
-            saltar();              /* siempre avanza */
+            saltar();
         }
         listaS();
     }
@@ -406,7 +383,7 @@ static void Param(void) {
     if (ACT() == ',') { emparejar(','); listP(); }
 }
 
-/*Inicio*/
+/* Funcion principal del analizador sintactico */
 int analizadorSintactico(void) {
     pos = 0; erroresSint = 0; panico = 0;
     Program();
